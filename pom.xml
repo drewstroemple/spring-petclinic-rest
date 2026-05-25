@@ -5,7 +5,7 @@
 
     <groupId>org.springframework.samples</groupId>
     <artifactId>spring-petclinic-rest</artifactId>
-    <version>2.6.2</version>
+    <version>3.3.5</version>
 
     <description>REST version of the Spring Petclinic sample application</description>
     <url>https://spring-petclinic.github.io/</url>
@@ -13,25 +13,28 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.2</version>
+        <version>3.3.5</version>
         <relativePath/> <!-- lookup parent from Maven repository -->
     </parent>
 
     <properties>
+        <!-- Java version -->
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+
         <!-- Third librairies -->
-        <spring-data-jdbc.version>1.2.1.RELEASE</spring-data-jdbc.version>
-        <springfox-swagger.version>3.0.0</springfox-swagger.version>
-        <jackson-databind-nullable.version>0.2.1</jackson-databind-nullable.version>
-        <mapstruct.version>1.4.1.Final</mapstruct.version>
-        <jaxb-api.version>2.3.0</jaxb-api.version>
+        <springdoc-openapi.version>2.3.0</springdoc-openapi.version>
+        <jackson-databind-nullable.version>0.2.6</jackson-databind-nullable.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
 
         <!-- Maven plugins -->
-        <jacoco.version>0.8.7</jacoco.version>
-        <openapi-generator-maven-plugin.version>5.2.1</openapi-generator-maven-plugin.version>
+        <jacoco.version>0.8.11</jacoco.version>
+        <openapi-generator-maven-plugin.version>7.10.0</openapi-generator-maven-plugin.version>
         <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
 
         <!-- Docker -->
-        <docker.jib-maven-plugin.version>1.3.0</docker.jib-maven-plugin.version>
+        <docker.jib-maven-plugin.version>3.4.4</docker.jib-maven-plugin.version>
         <docker.image.prefix>springcommunity</docker.image.prefix>
     </properties>
 
@@ -74,26 +77,14 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jdbc-core</artifactId>
-            <version>${spring-data-jdbc.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -121,9 +112,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>${springfox-swagger.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>${springdoc-openapi.version}</version>
         </dependency>
 
         <dependency>
@@ -152,11 +143,7 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-            <version>${jaxb-api.version}</version>
-        </dependency>
+
     </dependencies>
 
     <build>
@@ -240,6 +227,9 @@
                 <artifactId>jib-maven-plugin</artifactId>
                 <version>${docker.jib-maven-plugin.version}</version>
                 <configuration>
+                    <from>
+                        <image>eclipse-temurin:21-jre</image>
+                    </from>
                     <to>
                         <image>docker.io/${docker.image.prefix}/${project.artifactId}</image>
                         <tags>
@@ -280,9 +270,8 @@
                             <!-- Activating JAVA8 features -->
                             <configOptions>
                                 <performBeanValidation>true</performBeanValidation>
-                                <dateLibrary>java8</dateLibrary>
-                                <java8>true</java8>
-                                <openApiNullable>false</openApiNullable>
+                                <dateLibrary>java8-localdatetime</dateLibrary>
+                                <useSpringBoot3>true</useSpringBoot3>
                                 <serializationLibrary>jackson</serializationLibrary>
                             </configOptions>
                             <!-- override the default library to jersey2 -->
@@ -313,6 +302,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
+                    <source>21</source>
+                    <target>21</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
